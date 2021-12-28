@@ -3,7 +3,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import {FlexModule} from "@angular/flex-layout";
+import {ExtendedModule, FlexLayoutModule, FlexModule} from "@angular/flex-layout";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -21,7 +21,9 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatNativeDateModule,
     MatCheckboxModule,
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    FlexLayoutModule,
+    ExtendedModule
   ],
   exports: [
     MatButtonModule,
@@ -33,7 +35,9 @@ import {MatToolbarModule} from "@angular/material/toolbar";
     MatNativeDateModule,
     MatCheckboxModule,
     MatSidenavModule,
-    MatToolbarModule
+    MatToolbarModule,
+    FlexLayoutModule,
+    ExtendedModule
   ]
 })
 export class MaterialModule {

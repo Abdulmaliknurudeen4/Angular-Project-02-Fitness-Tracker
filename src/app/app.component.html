@@ -3,7 +3,30 @@
   <mat-sidenav
     role="navigation"
     #sidenav>
-    I container some eele
+    <mat-nav-list (click)="sidenav.close()">
+      <a mat-list-item routerLink="/signup">
+        <mat-icon>person_add</mat-icon>
+        <span class="nav-caption">Signup</span>
+      </a>
+      <a mat-list-item routerLink="/login">
+        <mat-icon>person</mat-icon>
+        <span class="nav-caption">LogIn</span>
+      </a>
+      <a mat-list-item routerLink="/training">
+        <mat-icon>
+          sports_gymnastics
+        </mat-icon>
+        <span>Training</span>
+      </a>
+
+      <mat-list-item>
+        <button mat-icon-button>
+          <mat-icon>eject</mat-icon>
+          <span class="nav-caption">LogOut</span>
+        </button>
+      </mat-list-item>
+
+    </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
@@ -32,6 +55,7 @@
           <li><a routerLink="/signup">Signup</a></li>
           <li><a routerLink="/login">Login</a></li>
           <li><a routerLink="/training">Training</a></li>
+          <li>LogOut</li>
         </ul>
 
       </div>

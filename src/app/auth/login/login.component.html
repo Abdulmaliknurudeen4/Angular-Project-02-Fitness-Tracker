@@ -1,59 +1,36 @@
-<section class="login-form">
+<section>
   <form
     fxLayout="column"
     fxLayoutAlign="center center"
-    fxLayoutGap="15px"
-    #f="ngForm" (ngSubmit)="onSubmit(f)">
-
+    fxLayoutGap="10px"
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()">
     <mat-form-field>
-      <mat-error
-        *ngIf="emailInput
-        .hasError('email')"
-      >E-mail is not valid.
-      </mat-error>
-      <mat-error
-        *ngIf="emailInput.hasError('required')">
-        Field Must not be Empty
-      </mat-error>
       <input
         type="email"
-        ngModel
-        #emailInput="ngModel"
-        name="email"
-        email
-        required
         matInput
-        placeholder="Your Email">
+        placeholder="Your email"
+        formControlName="email">
+      <mat-hint>Please enter a valid email.</mat-hint>
+      <mat-error>Invalid or missing email.</mat-error>
     </mat-form-field>
-
-    <mat-form-field hintLabel="should be at least 6 characters long">
-      <mat-error
-        *ngIf="pwdInput.hasError('minlength')">
-        Field must be minimum of 6 characters
-      </mat-error>
-      <mat-error
-        *ngIf="pwdInput.hasError('required')">
-        Field must not be Empty
-      </mat-error>
-      <mat-hint
-        align="end">{{pwdInput.value?.length}}/6
-      </mat-hint>
+    <mat-form-field>
       <input
-        ngModel
-        #pwdInput="ngModel"
-        name="password"
         type="password"
         matInput
-        required
-        minlength="6"
-        placeholder="Your password">
+        placeholder="Your password"
+        formControlName="password">
+      <mat-hint>Please enter your password.</mat-hint>
+      <mat-error>Missing password.</mat-error>
     </mat-form-field>
-
-    <button
-      type="submit"
-      [disabled]="f.invalid"
-      mat-raised-button
-      color="primary">Submit
-    </button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid">Submit</button>
   </form>
 </section>
+
+<!-- <ol>
+  <li>Add an email and password field (with Material Components of course)</li>
+  <li>Add validation (email => required and email, password => required)</li>
+  <li>Show errors and hints</li>
+  <li>Make form submittable and disable button if invalid</li>
+  <li>BONUS: Do all of that by using the reactive approach!</li>
+</ol> -->

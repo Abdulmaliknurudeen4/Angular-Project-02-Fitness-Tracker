@@ -11,14 +11,14 @@ import { LoginComponent } from './auth/login/login.component';
 import { TrainingComponent } from './training/training.component';
 import { CurrentTrainingComponent } from './training/current-training/current-training.component';
 import { NewTrainingComponent } from './training/new-training/new-training.component';
-import { PastTrainingsComponent } from './training/past-trainings/past-trainings.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { AppRoutingModule } from './app-routing.module';
-import { HeaderComponent } from './navigation/header/header.component';
-import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
-import { AuthService } from './auth/auth.service';
+import {PastTrainingsComponent} from "./training/past-trainings/past-trainings.component";
+import {WelcomeComponent} from "./welcome/welcome.component";
+import {HeaderComponent} from "./navigation/header/header.component";
+import {SidenavListComponent} from "./navigation/sidenav-list/sidenav-list.component";
+import {AppRoutingModule} from "./app-routing.module";
+import {AuthService} from "./auth/auth.service";
 import {StopTrainingComponent} from "./training/current-training/stop-training/stop-training.component";
-
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
@@ -43,7 +43,9 @@ import {StopTrainingComponent} from "./training/current-training/stop-training/s
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService],
+  providers: [AuthService,
+    {provide: MAT_DIALOG_DATA, useValue: {}}
+  ],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })

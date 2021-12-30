@@ -1,10 +1,10 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
-import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
-import {StopTrainingComponent} from "./stop-training/stop-training.component";
+import {MatDialog} from "@angular/material/dialog";
 import {TrainingService} from "../training.service";
 import {Subscription} from "rxjs";
 import {Exercise} from "../../exercise.model";
+import {StopTrainingComponent} from "./stop-training/stop-training.component";
 
 @Component({
   selector: 'app-current-training',
@@ -14,43 +14,44 @@ import {Exercise} from "../../exercise.model";
 export class CurrentTrainingComponent implements OnInit, OnDestroy {
   progress = 0;
   timer: number | undefined;
+  selectedExercise: Exercise | any;
   private trainSub: Subscription | undefined;
-  selectedExercise: Exercise | undefined;
 
-  constructor(@Inject(MAT_DIALOG_DATA) private dialog: MatDialog,
-              private trainingSl: TrainingService) {
+  constructor(private trainingSl: TrainingService,
+              private dialog: MatDialog) {
+    this.selectedExercise = null;
   }
 
   ngOnInit() {
-    this.trainSub = this.trainingSl.exerciseChanged
-      .subscribe(value => {
-        if(value){
-          this.selectedExercise = value;
-          this.startOrResumeTimer();
-        }
-      });
+
+    this.startOrResumeTimer();
   }
 
   startOrResumeTimer() {
-    this.timer = setInterval(() => {
-      this.progress = this.progress + 5;
-      if (this.progress >= 100) {
-        clearInterval(this.timer);
-      }
-    }, this.selectedExercise?.duration);
+    if (this.trainingSl.getRunningExercise() != null){
+      // @ts-ignore
+      const step = this.trainingSl.getRunningExercise().duration / 100 * 1000;
+      this.timer = setInterval(()=>{
+        this.progress = this.progress + 1;
+        if(this.progress >= 100){
+          this.trainingSl.completeExercise();
+          clearInterval(this.timer);
+        }
+      }, step);
+    }
   }
 
   onStop() {
     clearInterval(this.timer);
     const dialogRef = this.dialog.open(StopTrainingComponent, {
       data: {
-        progress: 34
+        progress: this.progress
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.trainingSl.exerciseChanged.next(null);
+        this.trainingSl.cancelExercise(this.progress);
       } else {
         this.startOrResumeTimer();
       }
@@ -58,7 +59,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.trainSub)
+    if (this.trainSub)
       this.trainSub.unsubscribe();
   }
 }

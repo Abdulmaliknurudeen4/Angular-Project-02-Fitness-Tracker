@@ -9,20 +9,21 @@ import {TrainingService} from "./training.service";
 })
 export class TrainingComponent implements OnInit, OnDestroy {
   ongoingTraining = false;
-  private readonly trainingSubscription: Subscription | undefined;
+  private trainingSubscription: Subscription | undefined;
 
   constructor(private trainingService: TrainingService) {
+
+  }
+
+  ngOnInit() {
     this.trainingSubscription = this.trainingService
-      .exerciseChanged.subscribe(exer=>{
-        if(!!exer){
+      .exerciseChanged.subscribe(exercise=>{
+        if(!!exercise){
           this.ongoingTraining = true;
         }else{
           this.ongoingTraining = false;
         }
       });
-  }
-
-  ngOnInit() {
   }
 
 

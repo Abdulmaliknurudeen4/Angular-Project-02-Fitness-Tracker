@@ -20,7 +20,6 @@ export class NewTrainingComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    const exerciseId = form.value.selectedExercise;
-    this.trainingSl.startExercise(exerciseId);
+    this.trainingSl.startExercise(form.value.selectedExercise);
   }
 }

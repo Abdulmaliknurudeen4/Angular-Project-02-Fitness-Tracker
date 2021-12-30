@@ -21,7 +21,7 @@ import {StopTrainingComponent} from "./training/current-training/stop-training/s
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
-import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {AngularFireAuthModule} from "@angular/fire/compat/auth";
 
 @NgModule({
   declarations: [
@@ -45,7 +45,8 @@ import {AngularFirestore} from "@angular/fire/compat/firestore";
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
-    AngularFireModule.initializeApp(environment.firebase, 'ng-fitness-tracker')
+    AngularFireModule.initializeApp(environment.firebase, 'ng-fitness-tracker'),
+    AngularFireAuthModule
   ],
   providers: [AuthService,
     {provide: MAT_DIALOG_DATA, useValue: {}}

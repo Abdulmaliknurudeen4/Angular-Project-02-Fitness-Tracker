@@ -21,6 +21,7 @@ import {StopTrainingComponent} from "./training/current-training/stop-training/s
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
 
 @NgModule({
   declarations: [

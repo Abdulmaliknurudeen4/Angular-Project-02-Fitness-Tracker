@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {Exercise} from "../exercise.model";
 import {map, Subject} from "rxjs";
 import {AngularFirestore, AngularFirestoreCollection} from "@angular/fire/compat/firestore";
-import {resolve} from "@angular/compiler-cli";
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +9,9 @@ import {resolve} from "@angular/compiler-cli";
 export class TrainingService {
   availableExercises: Exercise[] = [];
   exerciseChanged = new Subject<Exercise | null>();
-  private runningExercise: Exercise | undefined | null;
-
   exercisesChanged: Subject<Exercise[]>;
   finishedExercisesChanged: Subject<Exercise[]>;
-
-
+  private runningExercise: Exercise | undefined | null;
   private itemsCollection: AngularFirestoreCollection<Exercise>;
   private finishedCollection: AngularFirestoreCollection<Exercise>;
 
@@ -63,7 +59,7 @@ export class TrainingService {
   }
 
   completeExercise() {
-    if (this.runningExercise){
+    if (this.runningExercise) {
       this.addFinishedExercise({
         ...this.runningExercise,
         date: new Date(),
@@ -71,6 +67,8 @@ export class TrainingService {
       });
     }
 
+    this.runningExercise = null;
+    this.exerciseChanged.next(null);
   }
 
   cancelExercise(progress: number) {
@@ -89,12 +87,12 @@ export class TrainingService {
 
   fetchCompletedOrCancelledExercises() {
     this.finishedCollection.valueChanges()
-      .subscribe((exercises:Exercise[])=>{
+      .subscribe((exercises: Exercise[]) => {
         this.finishedExercisesChanged.next(exercises);
       });
   }
 
-  private addFinishedExercise(exercise: Exercise){
+  private addFinishedExercise(exercise: Exercise) {
     this.finishedCollection
       .add(exercise);
   }

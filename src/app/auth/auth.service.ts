@@ -1,9 +1,9 @@
-import {User} from './user.model';
 import {AuthData} from './auth-data.model';
 import {Subject} from "rxjs";
 import {Injectable} from "@angular/core";
 import {Router} from "@angular/router";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
+import {TrainingService} from "../training/training.service";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,23 @@ export class AuthService {
   private isAuthenticated = false;
 
   constructor(private router: Router,
-              private afAuth: AngularFireAuth) {
+              private afAuth: AngularFireAuth,
+              private trainSl: TrainingService) {
+  }
+
+  initAuthListener() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        this.authChange.next(true);
+        this.router.navigate(['/training'])
+      } else {
+        this.trainSl.cancelSubscription();
+        this.isAuthenticated = false;
+        this.authChange.next(false);
+        this.router.navigate(['/login']);
+      }
+    })
   }
 
   registerUser(authData: AuthData) {
@@ -21,7 +37,6 @@ export class AuthService {
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
         console.log(result);
-        this.authSucessfully();
       }).catch(error => {
       console.log(error);
     });
@@ -32,27 +47,18 @@ export class AuthService {
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(result => {
         console.log(result.user?.uid);
-        this.authSucessfully();
       }).catch(error => {
       console.log(error);
     });
-    this.authSucessfully();
   }
 
   logout() {
     this.afAuth.signOut();
-    this.isAuthenticated = false;
-    this.authChange.next(false);
-    this.router.navigate(['/login']);
+
   }
 
   isAuth() {
     return this.isAuthenticated;
   }
 
-  private authSucessfully() {
-    this.isAuthenticated = true;
-    this.authChange.next(true);
-    this.router.navigate(['/training'])
-  }
 }

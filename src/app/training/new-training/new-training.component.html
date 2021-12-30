@@ -7,7 +7,7 @@
         <mat-select placeholder="Select Exercise" name="selectedExercise" ngModel>
          <mat-option
            *ngFor="let exec of
-           (availableExercises | async)"
+           availableExercises"
            [value]="exec.name">{{exec.name}}</mat-option>
         </mat-select>
       </mat-form-field>

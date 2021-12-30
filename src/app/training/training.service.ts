@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Exercise} from "../exercise.model";
-import {map, Subject, tap} from "rxjs";
+import {map, Subject} from "rxjs";
 import {AngularFirestore, AngularFirestoreCollection} from "@angular/fire/compat/firestore";
+import {resolve} from "@angular/compiler-cli";
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +10,20 @@ import {AngularFirestore, AngularFirestoreCollection} from "@angular/fire/compat
 export class TrainingService {
   availableExercises: Exercise[] = [];
   exerciseChanged = new Subject<Exercise | null>();
-  exercisesChanged: Subject<Exercise[]>;
   private runningExercise: Exercise | undefined | null;
-  private exercises: Exercise[] = [];
+
+  exercisesChanged: Subject<Exercise[]>;
+  finishedExercisesChanged: Subject<Exercise[]>;
+
+
   private itemsCollection: AngularFirestoreCollection<Exercise>;
+  private finishedCollection: AngularFirestoreCollection<Exercise>;
 
   constructor(private fireDb: AngularFirestore) {
     this.exercisesChanged = new Subject<Exercise[]>();
+    this.finishedExercisesChanged = new Subject<Exercise[]>();
     this.itemsCollection = this.fireDb.collection<Exercise>('availableExercises');
+    this.finishedCollection = this.fireDb.collection<Exercise>('finishedExercises');
   }
 
   fetchAvailableExercise() {
@@ -45,7 +52,7 @@ export class TrainingService {
     this.runningExercise = this.availableExercises
       .find(ex => ex.id == selectedId);
     if (this.runningExercise)
-    this.exerciseChanged.next({...this.runningExercise});
+      this.exerciseChanged.next({...this.runningExercise});
     return this.runningExercise;
   }
 
@@ -56,28 +63,39 @@ export class TrainingService {
   }
 
   completeExercise() {
-    if (this.runningExercise)
-      this.exercises.push({
+    if (this.runningExercise){
+      this.addFinishedExercise({
         ...this.runningExercise,
         date: new Date(),
         state: "Completed"
-      })
+      });
+    }
+
   }
 
   cancelExercise(progress: number) {
-    if (this.runningExercise)
-      this.exercises.push({
+    if (this.runningExercise) {
+      this.addFinishedExercise({
         ...this.runningExercise,
         duration: this.runningExercise.duration * (progress / 100),
         calories: this.runningExercise.calories * (progress / 100),
         date: new Date(),
         state: "Cancelled"
       });
-    this.runningExercise = null;
-    this.exerciseChanged.next(null);
+      this.runningExercise = null;
+      this.exerciseChanged.next(null);
+    }
   }
 
-  getCompletedOrCancelledExercises() {
-    return this.exercises.slice();
+  fetchCompletedOrCancelledExercises() {
+    this.finishedCollection.valueChanges()
+      .subscribe((exercises:Exercise[])=>{
+        this.finishedExercisesChanged.next(exercises);
+      });
+  }
+
+  private addFinishedExercise(exercise: Exercise){
+    this.finishedCollection
+      .add(exercise);
   }
 }

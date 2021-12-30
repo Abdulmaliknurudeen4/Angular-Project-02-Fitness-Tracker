@@ -35,6 +35,7 @@ export class TrainingService {
         });
 
       })).subscribe((exercises: Exercise[]) => {
+      console.log(exercises);
       this.availableExercises = exercises;
       this.exercisesChanged.next([...this.availableExercises]);
     });
@@ -44,7 +45,7 @@ export class TrainingService {
     this.runningExercise = this.availableExercises
       .find(ex => ex.id == selectedId);
     if (this.runningExercise)
-      this.exerciseChanged.next({...this.runningExercise});
+    this.exerciseChanged.next({...this.runningExercise});
     return this.runningExercise;
   }
 

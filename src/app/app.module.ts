@@ -22,6 +22,7 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {AngularFireAuthModule} from "@angular/fire/compat/auth";
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,11 @@ import {AngularFireAuthModule} from "@angular/fire/compat/auth";
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase, 'ng-fitness-tracker'),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    StoreModule.forRoot({}, {})
+    /*  StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+      EffectsModule.forRoot([]),
+      StoreRouterConnectingModule.forRoot()*/
   ],
   providers: [AuthService,
     {provide: MAT_DIALOG_DATA, useValue: {}}

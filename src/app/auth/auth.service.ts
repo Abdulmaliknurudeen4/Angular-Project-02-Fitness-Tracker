@@ -30,7 +30,7 @@ export class AuthService {
         this.trainSl.cancelSubscription();
         this.isAuthenticated = false;
         this.authChange.next(false);
-        this.router.navigate(['/login']);
+        this.router.navigate(['auth/login']);
       }
     })
   }

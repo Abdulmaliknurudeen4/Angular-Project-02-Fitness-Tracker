@@ -5,16 +5,21 @@ import {RouterModule} from "@angular/router";
 import {SharedModule} from "../shared.module";
 import {AuthService} from "./auth.service";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {StoreModule} from "@ngrx/store";
+import * as AppState from './store/auth.reducer';
 
 @NgModule({
   declarations: [
     SignupComponent,
     LoginComponent
   ],
-  imports: [RouterModule.forChild([
+  imports: [
+    RouterModule.forChild([
     {path: 'signup', component: SignupComponent},
     {path: 'login', component: LoginComponent},]),
-    SharedModule],
+    SharedModule,
+    StoreModule.forFeature('authentication', {authReducer: AppState.authReducers})
+  ],
   exports: [RouterModule],
   providers: [AuthService,
     {provide: MAT_DIALOG_DATA, useValue: {}}]

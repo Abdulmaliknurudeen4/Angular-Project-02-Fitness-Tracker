@@ -4,7 +4,7 @@
     <form #form="ngForm" (ngSubmit)="onSubmit(form)">
     <mat-card-content fxLayoutAlign="center">
       <mat-form-field>
-        <mat-select placeholder="Select Exercise" name="selectedExercise" ngModel>
+        <mat-select placeholder="Select Exercise" name="selectedExercise" ngModel [disabled]="isLoading">
          <mat-option
            *ngFor="let exec of
            availableExercises"

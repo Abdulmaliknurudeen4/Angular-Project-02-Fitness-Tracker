@@ -12,8 +12,6 @@ export class TrainingEffects {
 
 
   private finishedCollection: AngularFirestoreCollection<Exercise>;
-  private availableCollection: AngularFirestoreCollection<Exercise>;
-
   fetchCompletedCancelledExercises = createEffect(() => {
     return this.actions$.pipe(
       ofType(TrainingActions.FETCH_CC_EXERCISES),
@@ -71,7 +69,9 @@ export class TrainingEffects {
                   return {
                     ...runningExerciseEdit,
                     duration: runningExerciseEdit.duration * (payload.payload / 100),
-                    calories: runningExerciseEdit.calories * (payload.payload / 100)
+                    calories: runningExerciseEdit.calories * (payload.payload / 100),
+                    date: new Date(),
+                    state: "Cancelled"
                   };
                 return runningExerciseEdit;
               }))
@@ -90,6 +90,7 @@ export class TrainingEffects {
         })
       );
   }, {dispatch: true});
+  private availableCollection: AngularFirestoreCollection<Exercise>;
   fetchAvailabeExercises = createEffect(() => {
     return this.actions$.pipe(
       ofType(TrainingActions.FETCH_AVAL_EXERCISES),
@@ -121,7 +122,6 @@ export class TrainingEffects {
               private actions$: Actions) {
     this.availableCollection = this.fireDb.collection<Exercise>('availableExercises');
     this.finishedCollection = this.fireDb.collection<Exercise>('finishedExercises');
-    this.store.select(TrainingSelector.selectTrainingViewPageModel).pipe();
   }
 
 }

@@ -18,7 +18,7 @@ import * as AppState from './store/auth.reducer';
     {path: 'signup', component: SignupComponent},
     {path: 'login', component: LoginComponent},]),
     SharedModule,
-    StoreModule.forFeature('authentication', {authReducer: AppState.authReducers})
+    StoreModule.forFeature(AppState.authFeature)
   ],
   exports: [RouterModule],
   providers: [AuthService,

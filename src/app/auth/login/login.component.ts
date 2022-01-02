@@ -2,7 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 import {AuthService} from '../auth.service';
-import {Subscription} from "rxjs";
+import {Subscription, tap} from "rxjs";
+import * as AuthSelector from '../store/auth.selector';
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-login',
@@ -14,7 +16,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   private authSub: Subscription | undefined;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,
+              private store: Store) {
   }
 
   ngOnInit() {
@@ -27,7 +30,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
     this.authSub = this.authService.isloading.subscribe(value => {
       this.isLoading = value;
-    })
+    });
+    this.store.select(AuthSelector.selectAuthPageViewModel).pipe(tap(value=>console.log));
   }
 
   onSubmit() {

@@ -5,7 +5,8 @@ import {Exercise} from "../../exercise.model";
 import * as TrainingSelector from './training.selector';
 import * as TrainingActions from './training.actions';
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {map, switchMap} from "rxjs";
+import {exhaustMap, map, of, switchMap} from "rxjs";
+import {trainingFeature} from "./training.reducer";
 
 @Injectable()
 export class TrainingEffects {
@@ -60,6 +61,26 @@ export class TrainingEffects {
         return TrainingActions.SET_CC_EXERCISES({payload: value})
       })
     );
+  }, {dispatch: true});
+  finishedExercise = createEffect(()=>{
+    return this.actions$
+      .pipe(
+        ofType(TrainingActions.FINISHED_EXERCISE),
+        exhaustMap(()=>this.store.select(TrainingSelector.selectTrainingViewPageModel).pipe(map(trainingState => trainingState.runningEx))),
+        map(runningExercise => {
+         if(runningExercise){
+           // manipulation
+           this.finishedCollection.add({
+             ...runningExercise,
+             date: new Date(),
+             state: "Completed"
+           });
+           return TrainingActions.CLEAR_RUNNING_EXERCISE();
+         }else {
+           return ({type: 'DUMMY'});
+         }
+        })
+      );
   }, {dispatch: true});
 
 

@@ -50,18 +50,19 @@ export class AuthEffects {
     );
   }, {dispatch: false});
 
-  authError = createEffect(()=>{
+  authError = createEffect(() => {
     return this.actions$.pipe(
       ofType(AuthActions.AUTH_ERROR),
-      map(value=>{
-      this.snackBar.open
-      (value.payload,'', {duration: 4000});
-    }));
+      map(value => {
+        this.snackBar.open
+        (value.payload, '', {duration: 4000});
+      }));
   }, {dispatch: false});
 
-  authSuccess = createEffect(()=>{
+  authSuccess = createEffect(() => {
     return this.actions$.pipe(
-      map(value=>{
+      ofType(AuthActions.AUTH_SUCCESS),
+      map(value => {
         this.router.navigate(['/training'])
       })
     );

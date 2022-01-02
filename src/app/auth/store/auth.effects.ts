@@ -4,7 +4,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {Router} from "@angular/router";
 import * as AuthActions from './auth.actions';
-import {catchError, map, of, switchMap} from "rxjs";
+import {catchError, map, of, switchMap, tap} from "rxjs";
+import {AuthData} from "../auth-data.model";
 
 const handleError = (err: string) => {
   return of(AuthActions.AUTH_ERROR({payload: 'There is an Error in this Appication.'}));
@@ -14,12 +15,15 @@ const handleError = (err: string) => {
 export class AuthEffects {
 
   authLogin = createEffect(() => {
+    // Problematic Effect.
+    // it's showing AUTH_SUCCESS FOR ALL CASES
 
     return this.actions$.pipe(
       ofType(AuthActions.START_LOGIN),
       switchMap(authdata => {
         return of(this.afAuth.signInWithEmailAndPassword(authdata.payload.email, authdata.payload.password))
           .pipe(
+            tap(value => console.log),
             map(value => AuthActions.AUTH_SUCCESS()),
             catchError(err => handleError(err)))
       })
@@ -31,13 +35,18 @@ export class AuthEffects {
   authSignUp = createEffect(() => {
     return this.actions$.pipe(
       ofType(AuthActions.START_SIGNUP),
-      switchMap(authdata => {
-        return of(this.afAuth.createUserWithEmailAndPassword(authdata.payload.email, authdata.payload.password))
+      map(authData => authData.payload),
+      switchMap((payloadData: AuthData) => {
+
+        return of(this.afAuth.createUserWithEmailAndPassword(payloadData.email, payloadData.password))
           .pipe(
             map(value => AuthActions.AUTH_SUCCESS()),
-            catchError(err => handleError(err)))
+            catchError(err => handleError(err))
+          );
+
       })
     );
+
   }, {dispatch: true});
 
   authLogOut = createEffect(() => {

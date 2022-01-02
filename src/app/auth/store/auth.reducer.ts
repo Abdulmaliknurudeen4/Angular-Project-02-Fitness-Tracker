@@ -16,13 +16,15 @@ export const authFeature = createFeature({name: 'authentication', reducer: creat
     on(AuthActions.START_LOGIN, (state: State, action) => {
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        isAuth: false
       };
     }),
     on(AuthActions.START_SIGNUP, (state: State, action) => {
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        isAuth: false
       };
     }),
     on(AuthActions.AUTH_ERROR, (state: State, action) => {
@@ -41,34 +43,3 @@ export const authFeature = createFeature({name: 'authentication', reducer: creat
       };
     })
   )});
-/*
-export const authReducers = createReducer(initialState,
-  on(AuthActions.START_LOGIN, (state: State, action) => {
-    return {
-      ...state,
-      isLoading: true
-    };
-  }),
-  on(AuthActions.START_SIGNUP, (state: State, action) => {
-    return {
-      ...state,
-      isLoading: true
-    };
-  }),
-  on(AuthActions.AUTH_ERROR, (state: State, action) => {
-    return {
-      ...state,
-      isLoading: false,
-      error: action.payload
-    };
-  }),
-  on(AuthActions.AUTH_SUCCESS, (state: State, action) => {
-    return {
-      ...state,
-      isAuth: true,
-      isLoading: false,
-      error: null
-    };
-  })
-);
-*/

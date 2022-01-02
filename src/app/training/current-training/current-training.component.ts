@@ -31,6 +31,7 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
     if (this.trainingSl.getRunningExercise() != null){
       // @ts-ignore
       const step = this.trainingSl.getRunningExercise().duration / 100 * 1000;
+      // @ts-ignore
       this.timer = setInterval(()=>{
         this.progress = this.progress + 1;
         if(this.progress >= 100){

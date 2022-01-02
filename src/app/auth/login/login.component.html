@@ -23,8 +23,8 @@
       <mat-hint>Please enter your password.</mat-hint>
       <mat-error>Missing password.</mat-error>
     </mat-form-field>
-    <button type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid" *ngIf="!isLoading">Submit</button>
-    <mat-progress-spinner *ngIf="isLoading" mode="indeterminate"></mat-progress-spinner>
+    <button type="submit" mat-raised-button color="primary" [disabled]="loginForm.invalid" *ngIf="!(isLoading | async)">Submit</button>
+    <mat-progress-spinner *ngIf="(isLoading | async)" mode="indeterminate"></mat-progress-spinner>
   </form>
 </section>
 

@@ -15,7 +15,8 @@ import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 import {EffectsModule} from "@ngrx/effects";
 import {StoreRouterConnectingModule} from "@ngrx/router-store";
 import {SharedModule} from "./shared.module";
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {AuthEffects} from "./auth/store/auth.effects";
 
 @NgModule({
   declarations: [

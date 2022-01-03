@@ -4,28 +4,27 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {Router} from "@angular/router";
 import * as AuthActions from './auth.actions';
-import {catchError, map, of, switchMap, tap} from "rxjs";
+import {asyncScheduler, catchError, map, of, scheduled, switchMap} from "rxjs";
 import {AuthData} from "../auth-data.model";
+import firebase from "firebase/compat";
+import FirebaseError = firebase.FirebaseError;
 
-const handleError = (err: string) => {
-  return of(AuthActions.AUTH_ERROR({payload: 'There is an Error in this Appication.'}));
+const handleError = (err: firebase.FirebaseError) => {
+  return of(AuthActions.AUTH_ERROR({payload: err.message}));
 }
 
 @Injectable()
 export class AuthEffects {
 
   authLogin = createEffect(() => {
-    // Problematic Effect.
-    // it's showing AUTH_SUCCESS FOR ALL CASES
 
     return this.actions$.pipe(
       ofType(AuthActions.START_LOGIN),
       switchMap(authdata => {
-        return of(this.afAuth.signInWithEmailAndPassword(authdata.payload.email, authdata.payload.password))
+        return scheduled(this.afAuth.signInWithEmailAndPassword(authdata.payload.email, authdata.payload.password), asyncScheduler)
           .pipe(
-            tap(value => console.log),
             map(value => AuthActions.AUTH_SUCCESS()),
-            catchError(err => handleError(err)))
+            catchError((err: FirebaseError) => handleError(err)))
       })
     );
 
@@ -38,7 +37,7 @@ export class AuthEffects {
       map(authData => authData.payload),
       switchMap((payloadData: AuthData) => {
 
-        return of(this.afAuth.createUserWithEmailAndPassword(payloadData.email, payloadData.password))
+        return scheduled(this.afAuth.createUserWithEmailAndPassword(payloadData.email, payloadData.password), asyncScheduler)
           .pipe(
             map(value => AuthActions.AUTH_SUCCESS()),
             catchError(err => handleError(err))

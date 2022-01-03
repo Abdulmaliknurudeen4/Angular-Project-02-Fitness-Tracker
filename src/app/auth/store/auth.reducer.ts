@@ -41,5 +41,11 @@ export const authFeature = createFeature({name: 'authentication', reducer: creat
         isLoading: false,
         error: null
       };
+    }),
+    on(AuthActions.AUTH_LOGOUT, (state: State, action) => {
+      return {
+        ...state,
+        isAuth: false
+      };
     })
   )});

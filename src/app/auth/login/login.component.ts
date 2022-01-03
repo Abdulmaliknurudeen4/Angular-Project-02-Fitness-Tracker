@@ -1,8 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-
-import {AuthService} from '../auth.service';
-import {map, Observable, Subscription, tap} from "rxjs";
+import {map, Observable} from "rxjs";
 import * as AuthSelector from '../store/auth.selector';
 import * as AuthActions from '../store/auth.actions';
 import {Store} from "@ngrx/store";
@@ -17,8 +15,7 @@ export class LoginComponent implements OnInit {
   isLoading: Observable<boolean> = new Observable<boolean>();
 
 
-  constructor(private authService: AuthService,
-              private store: Store) {
+  constructor(private store: Store) {
   }
 
   ngOnInit() {

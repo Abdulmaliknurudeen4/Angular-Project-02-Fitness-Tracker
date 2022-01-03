@@ -10,14 +10,12 @@ import {
   UrlTree
 } from '@angular/router';
 import {map, Observable, take} from 'rxjs';
-import {AuthService} from "./auth.service";
 import {Store} from "@ngrx/store";
 import * as AuthSelector from './store/auth.selector';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanLoad {
-  constructor(private authSl: AuthService,
-              private router: Router,
+  constructor(private router: Router,
               private store: Store) {
   }
 

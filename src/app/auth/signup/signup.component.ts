@@ -1,43 +1,36 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
-
-import {AuthService} from '../auth.service';
-import {Subscription} from "rxjs";
+import {map, Observable} from "rxjs";
+import {Store} from "@ngrx/store";
+import * as AuthSelector from '../store/auth.selector';
+import * as AuthActions from '../store/auth.actions';
+import {AuthData} from "../auth-data.model";
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent implements OnInit, OnDestroy {
+export class SignupComponent implements OnInit {
 
   maxDate: Date = new Date();
-  sliding: boolean = false;
-  authSub: Subscription | undefined;
+  isLoading$: Observable<boolean> = new Observable<boolean>();
 
-  constructor(private authService: AuthService) {
-    this.sliding = false;
+  constructor(private store: Store) {
   }
 
   ngOnInit() {
-    this.sliding = false;
     this.maxDate = new Date();
     this.maxDate.setFullYear(this.maxDate.getFullYear() - 18);
-    this.authSub = this.authService.isloading.subscribe(value => {
-      this.sliding = value;
-    });
+    this.isLoading$ = this.store.select(AuthSelector.selectAuthPageViewModel).pipe(map(value => value.isLoading));
   }
 
   onSubmit(form: NgForm) {
-    this.authService.registerUser({
+    const register: AuthData = {
       email: form.value.email,
       password: form.value.password
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.authSub)
-      this.authSub.unsubscribe();
+    };
+    this.store.dispatch(AuthActions.START_SIGNUP({payload: register}))
   }
 
 }

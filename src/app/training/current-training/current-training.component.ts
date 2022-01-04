@@ -5,6 +5,9 @@ import {TrainingService} from "../training.service";
 import {Subscription} from "rxjs";
 import {Exercise} from "../../exercise.model";
 import {StopTrainingComponent} from "./stop-training/stop-training.component";
+import * as TrainingSelector from '../store/training.selector';
+import * as TrainingActions from '../store/training.actions';
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-current-training',
@@ -18,7 +21,8 @@ export class CurrentTrainingComponent implements OnInit, OnDestroy {
   private trainSub: Subscription | undefined;
 
   constructor(private trainingSl: TrainingService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private store: Store) {
     this.selectedExercise = null;
   }
 

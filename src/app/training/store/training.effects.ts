@@ -5,7 +5,7 @@ import {Exercise} from "../../exercise.model";
 import * as TrainingSelector from './training.selector';
 import * as TrainingActions from './training.actions';
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {exhaustMap, map, switchMap} from "rxjs";
+import {exhaustMap, map, switchMap, tap} from "rxjs";
 
 @Injectable()
 export class TrainingEffects {
@@ -17,7 +17,7 @@ export class TrainingEffects {
       ofType(TrainingActions.FETCH_CC_EXERCISES),
 
       // switch or exhaustMap
-      switchMap(() => {
+      exhaustMap(() => {
         return this.finishedCollection.snapshotChanges().pipe(
           map(documentArray => {
             return documentArray.map(doc => {
@@ -96,7 +96,7 @@ export class TrainingEffects {
       ofType(TrainingActions.FETCH_AVAL_EXERCISES),
 
       // switch or exhaustMap
-      switchMap(() => {
+      exhaustMap(() => {
         return this.availableCollection.snapshotChanges().pipe(
           map(documentArray => {
             return documentArray.map(doc => {
@@ -111,6 +111,7 @@ export class TrainingEffects {
 
           }));
       }),
+      tap(value => console.log),
       map(value => {
         return TrainingActions.SET_AVAL_EXERCISES({payload: value})
       })

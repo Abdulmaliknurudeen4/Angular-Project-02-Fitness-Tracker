@@ -1,31 +1,34 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Exercise} from "../../exercise.model";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
-import {TrainingService} from "../training.service";
-import {Subscription} from "rxjs";
+import {map, tap} from "rxjs";
+import {Store} from "@ngrx/store";
+import * as TrainingSelector from '../store/training.selector';
+import * as TrainingActions from '../store/training.actions';
 
 @Component({
   selector: 'app-past-trainings',
   templateUrl: './past-trainings.component.html',
   styleUrls: ['./past-trainings.component.css']
 })
-export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PastTrainingsComponent implements OnInit, AfterViewInit {
   displayedColumns = ['date', 'name', 'duration', 'calories', 'state'];
   dataSource = new MatTableDataSource<Exercise>();
   @ViewChild(MatSort) sort: MatSort | undefined;
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
-  private trainingSubscription: Subscription | undefined;
 
-  constructor(private trainingSl: TrainingService) {
+  constructor(private store: Store) {
   }
 
   ngOnInit() {
-    this.trainingSl.fetchCompletedOrCancelledExercises();
-    this.trainingSubscription = this.trainingSl.finishedExercisesChanged.subscribe(exercises => {
-      this.dataSource.data = exercises;
-    });
+    this.store.dispatch(TrainingActions.FETCH_CC_EXERCISES());
+    this.store.select(TrainingSelector.selectTrainingViewPageModel)
+      .pipe(map(trainingState => trainingState.cc_Exer))
+      .subscribe(ccExercises => {
+        this.dataSource.data = ccExercises;
+      })
   }
 
   doFilter(filterValue: any) {
@@ -40,8 +43,4 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.trainingSubscription)
-      this.trainingSubscription.unsubscribe();
-  }
 }

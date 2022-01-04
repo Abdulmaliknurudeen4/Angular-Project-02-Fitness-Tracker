@@ -34,7 +34,8 @@ export const trainingFeature = createFeature({
     on(TrainingActions.SET_CC_EXERCISES, (state, action) => {
       return {
         ...state,
-        completedOrFinishedExercises: action.payload.slice()
+        completedOrFinishedExercises: action.payload.slice(),
+        isLoadingExercise: false
       };
     }),
     on(TrainingActions.SET_RUNNING_EXERCISE, (state, action) => {

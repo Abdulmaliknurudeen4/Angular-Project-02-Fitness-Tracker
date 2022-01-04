@@ -28,7 +28,8 @@ export class TrainingEffects {
                 name: doc.payload.doc.data().name,
                 duration: +doc.payload.doc.data().duration,
                 calories: +doc.payload.doc.data().calories,
-                imgPath: doc.payload.doc.data().imgPath
+                imgPath: doc.payload.doc.data().imgPath,
+                date: doc.payload.doc.data().date
               };
             });
 

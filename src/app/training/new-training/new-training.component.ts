@@ -1,40 +1,43 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnInit} from '@angular/core';
 import {Exercise} from "../../exercise.model";
 import {NgForm} from "@angular/forms";
-import {Subscription} from "rxjs";
-import {TrainingService} from "../training.service";
+import {map, Observable, tap} from "rxjs";
+import * as TrainingSelector from '../store/training.selector';
+import * as TrainingActions from '../store/training.actions';
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-new-training',
   templateUrl: './new-training.component.html',
   styleUrls: ['./new-training.component.css']
 })
-export class NewTrainingComponent implements OnInit, OnDestroy {
-  availableExercises: Exercise[] = [];
+export class NewTrainingComponent implements OnInit {
+  availableExercises$: Observable<Exercise[]> = new Observable<Exercise[]>();
+  isLoading$: boolean = false;
 
-  private exerciseSubscription: Subscription | undefined;
-  isLoading: boolean = false;
-
-  constructor(private trainingSl: TrainingService) {
+  constructor(private store: Store) {
+    this.availableExercises$ = new Observable<Exercise[]>();
   }
 
   ngOnInit() {
-    this.isLoading = true;
-    this.trainingSl.fetchAvailableExercise();
-    this.exerciseSubscription =
-      this.trainingSl.exercisesChanged
-        .subscribe((exercises: Exercise[]) => {
-          this.availableExercises = exercises;
-          this.isLoading = false;
-        });
+    this.store.dispatch(TrainingActions.FETCH_AVAL_EXERCISES());
+
+    this.store.select(TrainingSelector.selectTrainingViewPageModel).pipe(map(trainingState => {
+      return !!trainingState.isLoading;
+    })).subscribe(value => {
+      this.isLoading$ = value;
+    });
+
+    this.availableExercises$ = this.store
+      .select(TrainingSelector.selectTrainingViewPageModel)
+      .pipe(map(trainingState => trainingState.availabeEx), map((value: Exercise[]) => {
+        return value;
+      }));
+
   }
 
   onSubmit(form: NgForm) {
-    this.trainingSl.startExercise(form.value.selectedExercise);
+    this.store.dispatch(TrainingActions.SET_RUNNING_EXERCISE({payload: form.value.selectedExercise}));
   }
 
-  ngOnDestroy(): void {
-    if (this.exerciseSubscription)
-      this.exerciseSubscription.unsubscribe();
-  }
 }

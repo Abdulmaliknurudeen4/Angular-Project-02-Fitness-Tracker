@@ -32,8 +32,8 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit {
   }
 
   doFilter(filterValue: any) {
-    const value = filterValue.target.value;
-    this.dataSource.filter = filterValue.trim().toLocaleLowerCase();
+    const value = filterValue.target.value.trim().toLocaleLowerCase();
+    this.dataSource.filter = value;
   }
 
   ngAfterViewInit(): void {

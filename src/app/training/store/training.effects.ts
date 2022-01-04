@@ -12,6 +12,8 @@ export class TrainingEffects {
 
 
   private finishedCollection: AngularFirestoreCollection<Exercise>;
+  private availableCollection: AngularFirestoreCollection<Exercise>;
+
   fetchCompletedCancelledExercises = createEffect(() => {
     return this.actions$.pipe(
       ofType(TrainingActions.FETCH_CC_EXERCISES),
@@ -41,7 +43,9 @@ export class TrainingEffects {
     return this.actions$
       .pipe(
         ofType(TrainingActions.FINISHED_EXERCISE),
-        exhaustMap(() => this.store.select(TrainingSelector.selectTrainingViewPageModel).pipe(map(trainingState => trainingState.runningEx))),
+        exhaustMap(() => this.store
+          .select(TrainingSelector.selectTrainingViewPageModel)
+          .pipe(map(trainingState => trainingState.runningEx))),
         map(runningExercise => {
           if (runningExercise) {
             // manipulation
@@ -62,7 +66,8 @@ export class TrainingEffects {
       .pipe(
         ofType(TrainingActions.CANCEL_EXERCISE),
         exhaustMap(payload => {
-          return this.store.select(TrainingSelector.selectTrainingViewPageModel)
+          return this.store
+            .select(TrainingSelector.selectTrainingViewPageModel)
             .pipe(map(trainingState => trainingState.runningEx),
               map(runningExerciseEdit => {
                 if (runningExerciseEdit)
@@ -90,7 +95,6 @@ export class TrainingEffects {
         })
       );
   }, {dispatch: true});
-  private availableCollection: AngularFirestoreCollection<Exercise>;
   fetchAvailabeExercises = createEffect(() => {
     return this.actions$.pipe(
       ofType(TrainingActions.FETCH_AVAL_EXERCISES),
@@ -111,9 +115,8 @@ export class TrainingEffects {
 
           }));
       }),
-      tap(value => console.log),
       map(value => {
-        return TrainingActions.SET_AVAL_EXERCISES({payload: value})
+        return TrainingActions.SET_AVAL_EXERCISES({payload: (value as Exercise[])});
       })
     );
   }, {dispatch: true});
